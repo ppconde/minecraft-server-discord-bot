@@ -1,23 +1,33 @@
-const util = require('minecraft-server-util');
-const client = new util.RCON();
-const password = 'm"Tk"kf{5~#p?cE5';
+require("dotenv").config();
+const { Rcon } = require("rcon-client");
 
-client.on('message', (message) => {
-    console.log('mensagem: ', message);
-});
+async function getOnlinePlayers() {
+  const rcon = new Rcon({
+    host: process.env.SERVER_ADDRESS,
+    port: Number(process.env.RCON_PORT),
+    password: process.env.RCON_PASSWORD,
+  });
 
-module.exports = {
-    init: async function() {
-        await client.connect('89.152.236.43', 25551);
-        await client.login(password);
-        const players = await getWhitelistedPlayers();
-        console.log('msg: ', players);
-        // await client.close();
-    }
+  await rcon.connect();
+
+  try {
+    const response = await rcon.send("list");
+    console.log("Raw RCON 'list' response:", response);
+
+    const playerListPart = response.split(":")[1]?.trim();
+    const players = playerListPart
+      ? playerListPart.split(",").map((p) => p.trim())
+      : [];
+
+    console.log("Online players:", players);
+
+    await rcon.end();
+    return players;
+  } catch (error) {
+    console.error("Error fetching players:", error);
+    await rcon.end();
+    return [];
+  }
 }
 
-async function getWhitelistedPlayers() {
-    const msg = await client.execute('whitelist list');
-    return msg.split('whitelisted players: ')[1].split(', ')
-}
-
+getOnlinePlayers();

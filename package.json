@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "dev": "node --watch index.js"
   },
   "repository": {
     "type": "git",
@@ -18,15 +18,14 @@
   },
   "homepage": "https://github.com/ppconde/minecraft-server-discord-bot#readme",
   "dependencies": {
-    "@discordjs/rest": "^0.3.0",
-    "discord-api-types": "^0.27.3",
-    "discord.js": "^13.6.0",
-    "minecraft-server-util": "^5.2.9"
-  },
-  "engines": {
-    "node": "20.x.x"
+    "@discordjs/rest": "^2.5.1",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.0.1",
+    "mcstatus": "^1.0.1",
+    "rcon-client": "^4.2.5"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+    "discord-api-types": "^0.27.3"
+  },
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }

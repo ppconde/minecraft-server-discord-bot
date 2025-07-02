@@ -1,137 +1,76 @@
-const { Client, MessageEmbed, Intents } = require('discord.js');
-const { queryFull } = require('minecraft-server-util');
-const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] })
-const token = 'OTM1MjU0NjI5MDQ0ODU0ODI0.Ye79vw.YnHPZSfl36E_vuEKxgF-JlU6DMI';
-const PREFIX = '!'
-const basePath = 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/';
-const onlineUrl = basePath + '7/7e/Sitting_Baby_Fox.png/revision/latest?cb=20190213180035';
-const offlineUrl = basePath + 'e/e6/Sleeping_Baby_Fox.png/revision/latest?cb=20190218183612';
+require("dotenv").config();
+const fetch = require("node-fetch"); // npm i node-fetch@2
+const { Client, GatewayIntentBits, Events } = require("discord.js");
 
-const options = {
-    timeout: 10_000, // timeout in milliseconds
-    enableSRV: true // SRV record lookup
-};
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+const CHANNEL_ID = process.env.CHANNEL_ID;
+const MINECRAFT_SERVER =
+  process.env.MINECRAFT_SERVER || "minecraft.ppconde.com";
 
-const CHANNEL_ID = 949356247948337212;
+const CHECK_INTERVAL = 5000; // 5 seconds
 
-const UPDATE_TIME = 20_000;
-
-const getServerStatusMessage = async (ip, port) => {
-    const richMessage = new MessageEmbed().setTimestamp(new Date());
-
-    return queryFull(ip, port, options).then(async (result) => {
-        const { players, motd } = { ...result };
-        richMessage
-            .setColor('#00FF00')
-            .setThumbnail(onlineUrl)
-            .setTitle(`${motd.clean} is online`)
-            .addFields(
-                { name: 'Online Players', value: `${players.online}`, inline: true },
-                { name: 'Max Players', value: `${players.max}`, inline: true },
-            );
-
-        if (players.list?.length) {
-            richMessage.setDescription(`**Currently playing: **\n ${players.list.reduce((acc, p) => `${acc + p}\n`, '')}`);
-        }
-
-        return richMessage;
-
-    }).catch(async (error) => {
-        return richMessage
-            .setColor('#8B0000')
-            .setThumbnail(offlineUrl)
-            .setTitle(`Server is offline or couldn\'t be reached`)
-            .addField('Error message: ', `${error.message}`);
-    });
-}
-
-getExistingEmbeded = async (obj) => {
-    console.log('aqui: ', obj)
-    // return (obj?.channels?.fetch(CHANNEL_ID) || obj).then((response) => {
-    //     return response.messages.fetch(({ limit: 20 })).then((msgs) => {
-    //         console.log('emb: ', msgs);
-    //         return msgs.find((msg) => msg.embeds.length && msg.author.bot);
-    //     })?.embeds?.[0];
-    // })
-}
-
-updateMessage = async () => {
-    const { ip, port, msgRef } = getInfo();
-    const richMessage = await getServerStatusMessage(ip, port);
-    msgRef.edit({ embeds: [richMessage] });
-}
-
-setInfo = (info) => {
-    const { ip, port, msgRef } = info;
-    this.ip = ip || this.ip;
-    this.port = port || this.port;
-    this.msgRef = msgRef || this.msgRef;
-}
-
-getInfo = () => {
-    return {
-        ip: this.ip,
-        port: this.port,
-        msgRef: this.msgRef,
-    }
-}
-
-bot.on('ready', async (client) => {
-    console.log('Bot has come online.');
-    const channel = await client.channels.fetch(CHANNEL_ID).catch((e) => console.log('Error: ', e));
-    
-    console.log('rich: ', client )
-    const richMessage = await getExistingEmbeded(channel);
-    // const msgRef = await channel.send({ embeds: [richMessage] });
-
-    // setInfo({ ip, port, msgRef });
-
-    // if (msgRef) {
-    //     updateMessage();
-    // }
-    // channel.messages.fetch(({ limit: 20 })).then((response) => {
-    //     console.log('aqui: ', response);
-    // });
-    
-    //find channel
-    // find text channel
-
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
-bot.on('messageCreate', async (message) => {
-    let args = message.content.substring(PREFIX.length).split(' ')
+let lastPlayers = new Set();
 
-    switch (args[0]) {
-        case 'mc': {
-            if (!args[1]) return message.channel.send('You must type a minecraft server ip');
-            const ip = args[1];
-            const port = args[2]?.match(/\d+/) ? Number(args[2]) : 25570;
+async function fetchMinecraftStatus(server) {
+  try {
+    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${server}`);
+    if (!res.ok) throw new Error(`Status fetch failed: ${res.status}`);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Failed to fetch Minecraft status:", err.message);
+    return null;
+  }
+}
 
-            const richMessage = await getExistingEmbeded(message) || await getServerStatusMessage(ip, port, message);
-            const msgRef = await message.channel.send({ embeds: [richMessage] });
+async function sendDiscordMessage(channelId, content) {
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) throw new Error("Channel not found");
+    await channel.send(content);
+  } catch (err) {
+    console.error("Failed to send Discord message:", err.message);
+  }
+}
 
-            setInfo({ ip, port, msgRef });
+async function checkAndUpdate() {
+  const status = await fetchMinecraftStatus(MINECRAFT_SERVER);
 
-            if (msgRef) {
-                updateMessage();
-            }
-            break
-        }
-    }
+  if (!status || !status.online) {
+    lastPlayers.clear();
+    await sendDiscordMessage(
+      CHANNEL_ID,
+      "⚠️ Minecraft server is offline or unreachable."
+    );
+    return;
+  }
 
+  const playersOnline = status.players.online;
+  const playersMax = status.players.max;
+  const playersList = status.players.list || [];
+
+  const currentPlayers = new Set(playersList.map((p) => p.name));
+
+  // Detect new players
+  const newPlayers = [...currentPlayers].filter((p) => !lastPlayers.has(p));
+
+  if (newPlayers.length > 0) {
+    const joined = newPlayers.join(", ");
+    const msg = `🎉 Player(s) joined: ${joined}\nOnline: ${playersOnline}/${playersMax}`;
+    await sendDiscordMessage(CHANNEL_ID, msg);
+  }
+
+  lastPlayers = currentPlayers;
+}
+
+client.once(Events.ClientReady, async () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+  await checkAndUpdate(); // Initial check
+  setInterval(checkAndUpdate, CHECK_INTERVAL);
 });
 
-bot.on('messageUpdate', async (oldMessage) => {
-    if (oldMessage.author.bot) {
-        setInfo({ msgRef: oldMessage })
-        setTimeout(() => updateMessage(), UPDATE_TIME);
-    }
-});
-
-// bot.on('message', (message) => {
-//     message.channel.messages.fetch({ limit: 1 }).then((response) => {
-//         console.log('repsonse: ', response);
-//     });
-// });
-
-bot.login(token)
+client.login(DISCORD_TOKEN);
