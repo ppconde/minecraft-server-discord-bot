@@ -1,11 +1,11 @@
 version: 2
 updates:
-  - package-ecosystem: 'pnpm' # See documentation for possible values
-    directory: '/' # Location of package manifests
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/" # Location of package manifests
     schedule:
-      interval: 'weekly'
+      interval: "weekly"
     assignees:
-      - 'ppconde'
-    target-branch: 'main'
+      - "ppconde"
+    target-branch: "main"
     commit-message:
-      prefix: 'deps'
+      prefix: "deps"
