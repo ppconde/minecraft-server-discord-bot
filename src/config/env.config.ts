@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN!;
 export const CHANNEL_ID = process.env.CHANNEL_ID!;
 export const SERVER_ADDRESS = process.env.SERVER_ADDRESS!;

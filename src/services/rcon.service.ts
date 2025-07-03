@@ -1,4 +1,4 @@
-import { withRconConnection } from "../utils/rcon.utils";
+import { withRconConnection } from "../utils/rcon.utils.ts";
 
 export async function getOnlinePlayers() {
   return await withRconConnection(async (rcon) => {

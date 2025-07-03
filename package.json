@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A simple minecraft server status discord bot",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",

@@ -11,7 +11,7 @@ async function getOnlinePlayers() {
   await rcon.connect();
 
   try {
-    const response = await rcon.send("list");
+    const response: string = await rcon.send("list");
     console.log("Raw RCON 'list' response:", response);
 
     const playerListPart = response.split(":")[1]?.trim();

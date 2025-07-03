@@ -1,5 +1,5 @@
 import { TextChannel } from "discord.js";
-import { client } from "../client";
+import { client } from "../client.ts";
 
 export async function sendDiscordMessage(
   channelId: string,

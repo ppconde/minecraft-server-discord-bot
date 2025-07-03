@@ -1,9 +1,14 @@
+import "dotenv/config";
 import { Events } from "discord.js";
-import { client } from "./client";
-import { CHECK_INTERVAL } from "./config/bot.config";
-import { SERVER_ADDRESS, CHANNEL_ID, DISCORD_TOKEN } from "./config/env.config";
-import { sendDiscordMessage } from "./services/messenger.service";
-import { fetchMinecraftStatus } from "./services/minecraft-status.service";
+import { client } from "./client.ts";
+import { CHECK_INTERVAL } from "./config/bot.config.ts";
+import {
+  SERVER_ADDRESS,
+  CHANNEL_ID,
+  DISCORD_TOKEN,
+} from "./config/env.config.ts";
+import { sendDiscordMessage } from "./services/messenger.service.ts";
+import { fetchMinecraftStatus } from "./services/minecraft-status.service.ts";
 
 let lastPlayers = new Set<string>();
 
