@@ -1,43 +1,11 @@
-import "dotenv/config";
-import { Client, GatewayIntentBits, Events, TextChannel } from "discord.js";
-
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN!;
-const CHANNEL_ID = process.env.CHANNEL_ID!;
-const SERVER_ADDRESS = process.env.SERVER_ADDRESS!;
-const CHECK_INTERVAL = 5000;
-
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
-});
+import { Events } from "discord.js";
+import { client } from "./client";
+import { CHECK_INTERVAL } from "./config/bot.config";
+import { SERVER_ADDRESS, CHANNEL_ID, DISCORD_TOKEN } from "./config/env.config";
+import { sendDiscordMessage } from "./services/messenger.service";
+import { fetchMinecraftStatus } from "./services/minecraft-status.service";
 
 let lastPlayers = new Set<string>();
-
-async function fetchMinecraftStatus(server: string): Promise<any | null> {
-  try {
-    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${server}`);
-    if (!res.ok) throw new Error(`Status fetch failed: ${res.status}`);
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    const e = err as Error;
-    console.error("❌ Failed to fetch Minecraft status:", e.message);
-    return null;
-  }
-}
-
-async function sendDiscordMessage(
-  channelId: string,
-  content: string
-): Promise<void> {
-  try {
-    const channel = (await client.channels.fetch(channelId)) as TextChannel;
-    if (!channel?.isTextBased()) throw new Error("Channel is not text-based");
-    await channel.send(content);
-  } catch (err) {
-    const e = err as Error;
-    console.error("❌ Failed to send Discord message:", e.message);
-  }
-}
 
 async function checkAndUpdate() {
   const status = await fetchMinecraftStatus(SERVER_ADDRESS);
