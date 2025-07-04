@@ -3,6 +3,5 @@ Version: 1.0.0
 Section: base
 Priority: optional
 Architecture: arm64
-Depends: nodejs (>= 24), pnpm
 Maintainer: Pedro Conde <pepconde.1993@gmail.com>
 Description: A Discord bot running on Raspberry Pi (Debian Bookworm arm64)
