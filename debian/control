@@ -1,7 +1,0 @@
-Package: discord-bot
-Version: 1.0.8
-Section: base
-Priority: optional
-Architecture: arm64
-Maintainer: Pedro Conde <pepconde.1993@gmail.com>
-Description: A Discord bot running on Raspberry Pi (Debian Bookworm arm64)
