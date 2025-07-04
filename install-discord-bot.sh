@@ -17,8 +17,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 echo "Installing Node.js 24..."
-nvm install 24
-nvm use 24
+nvm install v24.3.0
+nvm use v24.3.0
 
 echo "Enabling Corepack for pnpm..."
 corepack enable
@@ -44,7 +44,7 @@ Type=simple
 User=$USER
 Environment=NODE_ENV=production
 WorkingDirectory=/opt/discord-bot
-ExecStart=$NVM_DIR/versions/node/v24.*/bin/node /opt/discord-bot/dist/index.js
+ExecStart=$NVM_DIR/versions/node/v24.3.0/bin/node /opt/discord-bot/dist/index.js
 Restart=always
 
 [Install]
