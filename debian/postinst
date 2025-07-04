@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+echo "✅ Discord bot installed."
+echo "➡️  Please  configure your .env file at /opt/discord-bot/.env"
