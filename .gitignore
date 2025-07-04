@@ -2,3 +2,4 @@
 .env
 dist
 discord-bot_*/
+discord-bot*
