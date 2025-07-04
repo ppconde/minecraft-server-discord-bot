@@ -33,7 +33,7 @@ jobs:
           corepack install
 
       - name: Install dependencies
-        run: pnpm install --prod
+        run: pnpm install
         env:
           CI: true
 
