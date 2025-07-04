@@ -31,6 +31,9 @@ jobs:
         env:
           CI: true
 
+      - name: Build the project
+        run: pnpm run build
+
       - name: Run build-deb.sh script
         run: pnpm run build-deb
 
