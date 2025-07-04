@@ -1,5 +1,5 @@
 {
-  "name": "minecraft-server-discord-bot",
+  "name": "@ppconde/minecraft-server-discord-bot",
   "version": "1.0.0",
   "description": "A simple minecraft server status discord bot",
   "main": "index.js",
@@ -20,6 +20,9 @@
     "url": "https://github.com/ppconde/minecraft-server-discord-bot/issues"
   },
   "homepage": "https://github.com/ppconde/minecraft-server-discord-bot#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@discordjs/rest": "^2.5.1",
     "discord.js": "^14.21.0",

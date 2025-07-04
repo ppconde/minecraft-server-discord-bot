@@ -21,6 +21,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 24
+      - name: Authenticate npm for GitHub Packages
+        run: npm config set //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Enable Corepack and activate version from package.json
         run: |
           corepack enable
@@ -43,3 +47,7 @@ jobs:
           files: discord-bot_*.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish package to GitHub Packages
+        run: pnpm publish --access=public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
