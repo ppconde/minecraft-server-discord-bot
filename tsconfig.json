@@ -4,12 +4,12 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "rootDir": "src",
+    "outDir": "dist", // add this to specify output folder
     "esModuleInterop": true,
     "strict": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
+    "allowImportingTsExtensions": false,
     "types": [
       "node"
     ]
