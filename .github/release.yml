@@ -1,0 +1,33 @@
+name: Build and Release Debian Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install
+        env:
+          CI: true
+
+      - name: Run build-deb.sh script
+        run: pnpm run build-deb
+
+      - name: Upload Debian package as Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: discord-bot_*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
