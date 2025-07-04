@@ -1,6 +1,6 @@
 {
   "name": "@ppconde/minecraft-server-discord-bot",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A simple minecraft server status discord bot",
   "main": "index.js",
   "type": "module",
