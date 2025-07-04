@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js 24
         uses: actions/setup-node@v3
@@ -48,6 +50,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish package to GitHub Packages
-        run: pnpm publish --access=public
+        run: pnpm publish --access=public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
