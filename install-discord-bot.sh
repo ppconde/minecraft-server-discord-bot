@@ -10,7 +10,7 @@ DEB_URL="https://github.com/ppconde/minecraft-server-discord-bot/releases/downlo
 
 echo "Installing nvm..."
 if [ ! -d "$HOME/.nvm" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/main/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 fi
 
 export NVM_DIR="$HOME/.nvm"
