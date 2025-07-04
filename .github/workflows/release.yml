@@ -24,6 +24,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 24
+      - name: Enable Corepack and activate version from package.json
+        run: |
+          corepack enable
+          corepack install
 
       - name: Install dependencies
         run: pnpm install
