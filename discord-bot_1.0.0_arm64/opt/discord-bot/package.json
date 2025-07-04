@@ -7,8 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "build-deb": "./build-deb.sh"
+    "dev": "ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
