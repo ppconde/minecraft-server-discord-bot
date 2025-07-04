@@ -26,7 +26,7 @@ A Discord bot to monitor and interact with your Minecraft server, designed to ru
 The easiest way to install and configure everything is by running the install script:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/ppconde/minecraft-server-discord-bot/main/install-discord-bot.sh | bash
+sudo curl -sSL https://raw.githubusercontent.com/ppconde/minecraft-server-discord-bot/main/install-discord-bot.sh | bash
 ```
 
 ## Enable and start the service
