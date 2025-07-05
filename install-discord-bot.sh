@@ -36,11 +36,11 @@ After=network.target
 
 [Service]
 Type=simple
-User=$USER
+User=root
 Environment=NODE_ENV=production
 WorkingDirectory=/opt/discord-bot
-Environment=PATH=$HOME/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/home/$USER/.bun/bin/bun /opt/discord-bot/dist/index.js
+Environment=PATH=/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/root/.bun/bin/bun /opt/discord-bot/dist/index.js
 Restart=always
 
 [Install]
