@@ -8,6 +8,16 @@ echo "Latest version detected: $LATEST_VERSION"
 
 DEB_URL="https://github.com/ppconde/minecraft-server-discord-bot/releases/download/v${LATEST_VERSION}/discord-bot_${LATEST_VERSION}_arm64.deb"
 
+echo "Installing Bun runtime..."
+
+if ! command -v bun >/dev/null 2>&1; then
+  curl -fsSL https://bun.sh/install | bash
+
+  # Add Bun to current shell session PATH
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
 echo "Downloading Discord Bot v${LATEST_VERSION}..."
 curl -L -o discord-bot.deb "$DEB_URL"
 
@@ -29,7 +39,8 @@ Type=simple
 User=$USER
 Environment=NODE_ENV=production
 WorkingDirectory=/opt/discord-bot
-ExecStart=/usr/bin/env bun /opt/discord-bot/dist/index.js
+Environment=PATH=$HOME/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/$USER/.bun/bin/bun /opt/discord-bot/dist/index.js
 Restart=always
 
 [Install]
@@ -38,6 +49,6 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable discord-bot
-sudo systemctl start discord-bot
+sudo systemctl restart discord-bot
 
 echo "Discord Bot v${LATEST_VERSION} installed and service started!"
