@@ -20,7 +20,7 @@ cp debian/postinst "$PACKAGE_NAME/DEBIAN/"
 chmod +x "$PACKAGE_NAME/DEBIAN/postinst"
 
 # Copy bot files to /opt/discord-bot
-cp -r dist package.json pnpm-lock.yaml .env.example "$PACKAGE_NAME/opt/discord-bot/"
+cp -r dist package.json bun.lock .env.example "$PACKAGE_NAME/opt/discord-bot/"
 
 # Build the .deb package
 dpkg-deb --build "$PACKAGE_NAME"
