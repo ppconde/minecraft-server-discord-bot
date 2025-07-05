@@ -19,26 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js 24
-        uses: actions/setup-node@v3
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 24
-      - name: Authenticate npm for GitHub Packages
-        run: npm config set //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Enable Corepack and activate version from package.json
-        run: |
-          corepack enable
-          corepack install
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
         env:
           CI: true
 
       - name: Build the project
-        run: pnpm run build
+        run: bun build src/index.ts --outfile dist/index.js --target bun --format esm --minify
 
       - name: Run build-deb.sh script
         run: pnpm run build-deb

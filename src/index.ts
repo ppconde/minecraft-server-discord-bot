@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Events } from "discord.js";
 import { client } from "./client";
 import { CHECK_INTERVAL } from "./config/bot.config";
