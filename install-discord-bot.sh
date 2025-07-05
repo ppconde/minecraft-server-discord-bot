@@ -8,21 +8,6 @@ echo "Latest version detected: $LATEST_VERSION"
 
 DEB_URL="https://github.com/ppconde/minecraft-server-discord-bot/releases/download/v${LATEST_VERSION}/discord-bot_${LATEST_VERSION}_arm64.deb"
 
-echo "Installing nvm..."
-if [ ! -d "$HOME/.nvm" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-echo "Installing Node.js 24..."
-nvm install v24.3.0
-nvm use v24.3.0
-
-echo "Enabling Corepack for pnpm..."
-corepack enable
-
 echo "Downloading Discord Bot v${LATEST_VERSION}..."
 curl -L -o discord-bot.deb "$DEB_URL"
 
@@ -44,7 +29,7 @@ Type=simple
 User=$USER
 Environment=NODE_ENV=production
 WorkingDirectory=/opt/discord-bot
-ExecStart=$NVM_DIR/versions/node/v24.3.0/bin/node /opt/discord-bot/dist/index.js
+ExecStart=/usr/bin/env bun /opt/discord-bot/dist/index.js
 Restart=always
 
 [Install]

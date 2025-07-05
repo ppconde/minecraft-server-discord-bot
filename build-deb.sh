@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-VERSION=$(node -p "require('./package.json').version")
+VERSION=$(grep '"version":' package.json | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
 PACKAGE_NAME="discord-bot_${VERSION}_arm64"
 
 # Clean previous build
