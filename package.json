@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "bun src/index.ts",
+    "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --outfile dist/index.js --target bun --format esm --minify",
     "start": "bun dist/index.js",
     "build-deb": "./build-deb.sh"
