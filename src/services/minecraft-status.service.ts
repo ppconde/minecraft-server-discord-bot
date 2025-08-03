@@ -34,9 +34,7 @@ export type MinecraftServerStatus = {
 	plugins: Array<unknown>;
 };
 
-export async function fetchMinecraftStatus(
-	server: string,
-): Promise<MinecraftServerStatus | null> {
+export async function fetchMinecraftStatus(server: string): Promise<MinecraftServerStatus | null> {
 	try {
 		const res = await fetch(`https://api.mcstatus.io/v2/status/java/${server}`);
 		if (!res.ok) throw new Error(`Status fetch failed: ${res.status}`);

@@ -20,9 +20,7 @@ async function checkAndUpdate() {
 			previousPlayers = [];
 
 			const now = Date.now();
-			const timeSinceLastAlert = lastOfflineAlertTime
-				? now - lastOfflineAlertTime
-				: Infinity;
+			const timeSinceLastAlert = lastOfflineAlertTime ? now - lastOfflineAlertTime : Infinity;
 
 			if (timeSinceLastAlert > OFFLINE_ALERT_COOLDOWN) {
 				await sendDiscordEmbed(CHANNEL_ID, {
@@ -48,20 +46,14 @@ async function checkAndUpdate() {
 		lastOfflineAlertTime = null;
 
 		const currentPlayers = status.players.list.map((p) => p.name_clean);
-		const newPlayers = currentPlayers.filter(
-			(name) => !previousPlayers.includes(name),
-		);
+		const newPlayers = currentPlayers.filter((name) => !previousPlayers.includes(name));
 
 		if (newPlayers.length > 0) {
-			const message = `Welcome ${newPlayers
-				.map((name) => `**${name}**`)
-				.join(", ")} to the server!`;
+			const message = `Welcome ${newPlayers.map((name) => `**${name}**`).join(", ")} to the server!`;
 
 			const currentPlayersDisplay =
 				currentPlayers.length > 0
-					? currentPlayers
-							.map((name) => `${getRandomEmoji()} ${name}`)
-							.join("\n")
+					? currentPlayers.map((name) => `${getRandomEmoji()} ${name}`).join("\n")
 					: "No players online";
 
 			await sendDiscordEmbed(CHANNEL_ID, {

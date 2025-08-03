@@ -3,9 +3,7 @@ import { RCON_PASSWORD, RCON_PORT, SERVER_ADDRESS } from "../config/env.config";
 
 type RconCallback<T> = (rcon: Rcon) => Promise<T>;
 
-export async function withRconConnection<T>(
-	callback: RconCallback<T>,
-): Promise<T | null> {
+export async function withRconConnection<T>(callback: RconCallback<T>): Promise<T | null> {
 	const rcon = new Rcon({
 		host: SERVER_ADDRESS,
 		port: Number(RCON_PORT),
@@ -22,10 +20,7 @@ export async function withRconConnection<T>(
 		try {
 			await rcon.end();
 		} catch (err) {
-			console.error(
-				"⚠️ Failed to close RCON connection:",
-				(err as Error).message,
-			);
+			console.error("⚠️ Failed to close RCON connection:", (err as Error).message);
 		}
 	}
 }
