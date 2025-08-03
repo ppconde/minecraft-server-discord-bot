@@ -40,7 +40,7 @@ User=root
 Environment=NODE_ENV=production
 WorkingDirectory=/opt/discord-bot
 Environment=PATH=/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/root/.bun/bin/bun /opt/discord-bot/dist/index.js
+ExecStart=/root/.bun/bin/bun run /opt/discord-bot/src/index.ts
 Restart=always
 
 [Install]

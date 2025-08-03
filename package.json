@@ -1,12 +1,11 @@
 {
 	"name": "@ppconde/minecraft-server-discord-bot",
-	"version": "1.0.20",
+	"version": "1.0.21",
 	"description": "A simple minecraft server status discord bot",
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
-		"build": "bun build src/index.ts --outfile dist/index.js --target bun --format esm --minify",
 		"lint": "biome check --write",
 		"start": "bun dist/index.js",
 		"build-deb": "./build-deb.sh"
