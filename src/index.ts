@@ -1,125 +1,102 @@
 import { Events } from "discord.js";
 import { client } from "./client";
 import { CHECK_INTERVAL } from "./config/bot.config";
-import { SERVER_ADDRESS, CHANNEL_ID, DISCORD_TOKEN } from "./config/env.config";
+import { CHANNEL_ID, DISCORD_TOKEN, SERVER_ADDRESS } from "./config/env.config";
 import { sendDiscordEmbed } from "./services/messenger.service";
 import { fetchMinecraftStatus } from "./services/minecraft-status.service";
-
-const mcEmojis = [
-  "🪓",
-  "🧱",
-  "🪣",
-  "🗺️",
-  "🧭",
-  "🏹",
-  "🧨",
-  "🐷",
-  "🦊",
-  "🎮",
-  "💎",
-  "🪨",
-  "⛏️",
-  "🧊",
-  "💀",
-  "🥩",
-  "⚡",
-];
-
-function getRandomEmoji() {
-  return mcEmojis[Math.floor(Math.random() * mcEmojis.length)];
-}
+import { getRandomEmoji } from "./utils/emoji.utils";
 
 let previousPlayers: string[] = [];
 let lastOfflineAlertTime: number | null = null;
 const OFFLINE_ALERT_COOLDOWN = 30 * 60 * 1000; // 30 minutes
 
 async function checkAndUpdate() {
-  try {
-    console.log("🔄 Checking Minecraft server status...");
-    const status = await fetchMinecraftStatus(SERVER_ADDRESS);
+	try {
+		console.log("🔄 Checking Minecraft server status...");
+		const status = await fetchMinecraftStatus(SERVER_ADDRESS);
 
-    if (!status?.online) {
-      console.log("❌ Minecraft server is offline.");
-      previousPlayers = [];
+		if (!status?.online) {
+			console.log("❌ Minecraft server is offline.");
+			previousPlayers = [];
 
-      const now = Date.now();
-      const timeSinceLastAlert = lastOfflineAlertTime
-        ? now - lastOfflineAlertTime
-        : Infinity;
+			const now = Date.now();
+			const timeSinceLastAlert = lastOfflineAlertTime
+				? now - lastOfflineAlertTime
+				: Infinity;
 
-      if (timeSinceLastAlert > OFFLINE_ALERT_COOLDOWN) {
-        await sendDiscordEmbed(CHANNEL_ID, {
-          online: false,
-          title: "⛏️ Status Update",
-          description: "The Minecraft server is currently offline",
-          footer: SERVER_ADDRESS,
-        });
-        lastOfflineAlertTime = now;
-        console.log("📢 Sent offline alert");
-      } else {
-        console.log(
-          `⏱️ Skipping offline alert (cooldown: ${Math.ceil(
-            (OFFLINE_ALERT_COOLDOWN - timeSinceLastAlert) / 1000
-          )}s left)`
-        );
-      }
+			if (timeSinceLastAlert > OFFLINE_ALERT_COOLDOWN) {
+				await sendDiscordEmbed(CHANNEL_ID, {
+					online: false,
+					title: "⛏️ Status Update",
+					description: "The Minecraft server is currently offline",
+					footer: SERVER_ADDRESS,
+				});
+				lastOfflineAlertTime = now;
+				console.log("📢 Sent offline alert");
+			} else {
+				console.log(
+					`⏱️ Skipping offline alert (cooldown: ${Math.ceil(
+						(OFFLINE_ALERT_COOLDOWN - timeSinceLastAlert) / 1000,
+					)}s left)`,
+				);
+			}
 
-      return;
-    }
+			return;
+		}
 
-    // Reset cooldown once server is back online
-    lastOfflineAlertTime = null;
+		// Reset cooldown once server is back online
+		lastOfflineAlertTime = null;
 
-    const currentPlayers = status.players.list.map((p) => p.name_clean);
-    const newPlayers = currentPlayers.filter(
-      (name) => !previousPlayers.includes(name)
-    );
+		const currentPlayers = status.players.list.map((p) => p.name_clean);
+		const newPlayers = currentPlayers.filter(
+			(name) => !previousPlayers.includes(name),
+		);
 
-    if (newPlayers.length > 0) {
-      const message = `Welcome ${newPlayers
-        .map((name) => `**${name}**`)
-        .join(", ")} to the server!`;
+		if (newPlayers.length > 0) {
+			const message = `Welcome ${newPlayers
+				.map((name) => `**${name}**`)
+				.join(", ")} to the server!`;
 
-      const currentPlayersDisplay =
-        currentPlayers.length > 0
-          ? currentPlayers
-              .map((name) => `${getRandomEmoji()} ${name}`)
-              .join("\n")
-          : "No players online";
+			const currentPlayersDisplay =
+				currentPlayers.length > 0
+					? currentPlayers
+							.map((name) => `${getRandomEmoji()} ${name}`)
+							.join("\n")
+					: "No players online";
 
-      await sendDiscordEmbed(CHANNEL_ID, {
-        online: status.online,
-        title: "⛏️ Status Update",
-        description: message,
-        fields: [
-          {
-            name: "Current Players",
-            value: currentPlayersDisplay,
-            inline: false,
-          },
-        ],
-        footer: SERVER_ADDRESS,
-      });
+			await sendDiscordEmbed(CHANNEL_ID, {
+				online: status.online,
+				title: "⛏️ Status Update",
+				description: message,
+				fields: [
+					{
+						name: "Current Players",
+						value: currentPlayersDisplay,
+						inline: false,
+					},
+				],
+				footer: SERVER_ADDRESS,
+			});
 
-      console.log("📢 Notified new players:", newPlayers);
-    } else {
-      console.log("✅ No new players.");
-    }
+			console.log("📢 Notified new players:", newPlayers);
+		} else {
+			console.log("✅ No new players.");
+		}
 
-    previousPlayers = currentPlayers;
-  } catch (err) {
-    console.error("❌ Error checking Minecraft server status:", err);
-  }
+		previousPlayers = currentPlayers;
+	} catch (err) {
+		console.error("❌ Error checking Minecraft server status:", err);
+	}
 }
 
 function startStatusLoop() {
-  setInterval(checkAndUpdate, CHECK_INTERVAL);
+	setInterval(checkAndUpdate, CHECK_INTERVAL);
 }
 
 client.once(Events.ClientReady, () => {
-  console.log(`✅ Logged in as ${client.user?.tag}!`);
-  checkAndUpdate(); // run immediately once
-  startStatusLoop();
+	console.log(`✅ Logged in as ${client.user?.tag}!`);
+	checkAndUpdate(); // run immediately once
+	startStatusLoop();
 });
 
 client.login(DISCORD_TOKEN);

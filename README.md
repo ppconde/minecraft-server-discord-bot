@@ -15,7 +15,7 @@ A Discord bot to monitor and interact with your Minecraft server, designed to ru
 
 - Raspberry Pi running Debian 12 (Bookworm) ARM64 or compatible Linux
 - Node.js v24 (managed via `nvm`)
-- `pnpm` package manager (enabled via Corepack)
+- [Bun](https://bun.sh/) JavaScript runtime
 
 ---
 
