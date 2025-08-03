@@ -19,8 +19,13 @@ cp debian/postinst "$PACKAGE_NAME/DEBIAN/"
 # Ensure postinst is executable
 chmod +x "$PACKAGE_NAME/DEBIAN/postinst"
 
-# Copy bot files to /opt/discord-bot
+# Copy bot files to package folder
 cp -r src package.json bun.lockb .env.example "$PACKAGE_NAME/opt/discord-bot/"
+
+# Run bun install **inside the package folder**, so node_modules are included in the package
+cd "$PACKAGE_NAME/opt/discord-bot"
+bun install
+cd -
 
 # Build the .deb package
 dpkg-deb --build "$PACKAGE_NAME"
