@@ -33,7 +33,7 @@
 		"rcon-client": "^4.2.5"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.4",
+		"@biomejs/biome": "2.3.7",
 		"@types/bun": "^1.2.18",
 		"@types/node": "^24.0.10",
 		"discord-api-types": "^0.38.15",
