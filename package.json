@@ -37,6 +37,6 @@
 		"@types/bun": "^1.2.18",
 		"@types/node": "^26.0.0",
 		"discord-api-types": "^0.38.15",
-		"typescript": "^6.0.2"
+		"typescript": "^7.0.2"
 	}
 }
